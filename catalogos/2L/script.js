@@ -218,7 +218,7 @@ function openModal(productId) {
 
     // Link do WhatsApp com número atualizado
     const message = encodeURIComponent(`Olá! Gostaria de fazer um pedido do produto: ${product.title}`);
-    document.getElementById('modalWhatsappBtn').href = `https://wa.me/5521920051788?text=${message}`;
+    document.getElementById('modalWhatsappBtn').href = `https://wa.me/5521998852318?text=${message}`;
 
     document.getElementById('productModal').classList.remove('hidden');
 }
@@ -233,3 +233,33 @@ document.getElementById('productModal').addEventListener('click', (e) => {
         closeModal();
     }
 });
+
+// FUNÇÃO PARA IMPRIMIR OU SALVAR EM PDF
+function printCatalog() {
+    window.print();
+}
+
+// FUNÇÃO PARA EXPORTAR COMO IMAGEM (PNG)
+function exportAsImage() {
+    const element = document.getElementById('catalogContent') || document.body;
+    const btn = event.currentTarget;
+    const originalBtnText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gerando imagem...';
+
+    html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'catalogo-dalbran-2L.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        btn.innerHTML = originalBtnText;
+    }).catch(err => {
+        console.error('Erro ao gerar imagem:', err);
+        alert('Ocorreu um erro ao gerar a imagem do catálogo.');
+        btn.innerHTML = originalBtnText;
+    });
+}

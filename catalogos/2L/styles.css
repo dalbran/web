@@ -124,6 +124,37 @@ body {
     background: var(--accent-hover);
 }
 
+/* BOTÕES DE EXPORTAÇÃO */
+.export-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-export {
+    background: #ffffff;
+    color: var(--primary-dark);
+    font-size: 0.88rem;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-export:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.btn-export-img {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-export-img:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 /* HERO BANNER */
 .hero {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
@@ -530,5 +561,48 @@ body {
 
     .modal-image-container {
         height: 200px;
+    }
+}
+
+/* IMPRESSÃO / SALVAR PDF */
+@media print {
+    .navbar, 
+    .search-bar, 
+    .export-buttons, 
+    .category-section, 
+    .btn-card-details, 
+    .modal-overlay,
+    .btn-whatsapp-nav {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .hero {
+        background: none;
+        color: black;
+        padding: 10px 0;
+    }
+
+    .hero-badge {
+        border: 1px solid #000;
+        color: black;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12px;
+    }
+
+    .product-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .card-image-box {
+        height: 140px;
     }
 }

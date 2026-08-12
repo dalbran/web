@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Biblioteca para exportar como Imagem -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -26,8 +28,8 @@
                 <input type="text" id="searchInput" placeholder="Buscar por produto, fragrância ou categoria..." oninput="filterProducts()">
             </div>
 
-            <a href="https://wa.me/5521920051788?text=Olá!%20Gostaria%20de%20tirar%20uma%20dúvida." target="_blank" class="btn btn-whatsapp-nav">
-                <i class="fa-brands fa-whatsapp"></i> <span class="hide-mobile">Contato</span>
+            <a href="https://wa.me/5521998852318?text=Olá!%20Gostaria%20de%20tirar%20uma%20dúvida." target="_blank" class="btn btn-whatsapp-nav">
+                <i class="fa-brands fa-whatsapp"></i> <span class="hide-mobile">(21) 99885-2318</span>
             </a>
         </div>
     </header>
@@ -38,11 +40,21 @@
             <span class="hero-badge">Qualidade & Rentabilidade</span>
             <h1>Catálogo Oficial de Produtos</h1>
             <p>Encontre a linha completa de limpeza, higiene e aromatizantes com variedade de fragrâncias.</p>
+            
+            <!-- Botões de Impressão e Download -->
+            <div class="export-buttons">
+                <button onclick="printCatalog()" class="btn btn-export">
+                    <i class="fa-solid fa-print"></i> Salvar em PDF / Imprimir
+                </button>
+                <button onclick="exportAsImage()" class="btn btn-export btn-export-img">
+                    <i class="fa-solid fa-file-image"></i> Baixar Imagem (PNG)
+                </button>
+            </div>
         </div>
     </section>
 
     <!-- Main Content -->
-    <main class="container main-content">
+    <main class="container main-content" id="catalogContent">
         <!-- Filtros por Setor (Categorias) -->
         <section class="category-section">
             <h2 class="section-title"><i class="fa-solid fa-layer-group"></i> Navegue por Setores</h2>
@@ -128,8 +140,8 @@
             </div>
             <div>
                 <p>
-                    <a href="https://wa.me/5521920051788?text=Olá!%20Gostaria%20de%20atendimento." target="_blank" style="color: #22c55e; text-decoration: none; font-weight: 600;">
-                        <i class="fa-brands fa-whatsapp"></i> (21) 92005-1788 — Fale no WhatsApp
+                    <a href="https://wa.me/5521998852318?text=Olá!%20Gostaria%20de%20atendimento." target="_blank" style="color: #22c55e; text-decoration: none; font-weight: 600;">
+                        <i class="fa-brands fa-whatsapp"></i> (21) 99885-2318 — Fale no WhatsApp
                     </a>
                 </p>
             </div>

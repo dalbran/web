@@ -56,13 +56,75 @@ function renderCustomCatalogProducts() {
 function catalogSearchText(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim(); }
 window.toggleCustomCatalogProduct = key => { const selected = window.customCatalogSelection; const index = selected.indexOf(key); if (index >= 0) selected.splice(index, 1); else selected.push(key); renderCustomCatalogProducts(); };
 function generateCustomCatalogLink() {
-  const selected = getCatalogItems().filter(product => window.customCatalogSelection.includes(`${product.source}:${product.id}`)); if (!selected.length) { showToast('Selecione ao menos um produto.', 'error'); return; }
-  const data = selected.map(product => ({ t: product.title, c: product.categoryName, d: product.desc, v: product.volume, i: `catalogos/${product.source}/${product.image}`, f: product.fragrances }));
-  const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(data)))));
-  const url = new URL(`catalogos/personalizado.html#${encoded}`, window.location.href).href;
-  const output = document.getElementById('custom-catalog-link'); output.classList.remove('hidden'); output.innerHTML = `<input readonly value="${url}"><button type="button" class="btn btn-primary" id="copy-custom-link" title="Copiar link do catálogo"><span class="copy-pages-icon" aria-hidden="true"></span>Copiar link</button><button type="button" class="btn btn-outline" id="share-custom-link">Compartilhar catálogo</button>`;
-  document.getElementById('copy-custom-link').onclick = () => navigator.clipboard.writeText(url).then(() => showToast('Link do catálogo copiado.', 'success'));
-  document.getElementById('share-custom-link').onclick = () => navigator.share ? navigator.share({ title: 'Catálogo Dalbran', url }).catch(() => {}) : navigator.clipboard.writeText(url).then(() => showToast('Link copiado.', 'success'));
+  const selectedKeys = window.customCatalogSelection;
+  if (!selectedKeys.length) { showToast('Selecione ao menos um produto.', 'error'); return; }
+
+  const grouped = {};
+  selectedKeys.forEach(key => {
+    const [source, id] = key.split(':');
+    if (!grouped[source]) grouped[source] = [];
+    grouped[source].push(id);
+  });
+
+  const compactHash = 'p=' + Object.entries(grouped).map(([src, ids]) => `${src}:${ids.join(',')}`).join(';');
+  const url = new URL(`catalogos/personalizado.html#${compactHash}`, window.location.href).href;
+
+  const output = document.getElementById('custom-catalog-link');
+  output.classList.remove('hidden');
+  output.innerHTML = `<input readonly value="${url}" id="custom-catalog-url-input"><button type="button" class="btn btn-primary" id="copy-custom-link" title="Copiar link do catálogo"><span class="copy-pages-icon" aria-hidden="true"></span>Copiar link</button><button type="button" class="btn btn-secondary" id="copy-short-custom-link" title="Gerar e copiar link curto">⚡ Copiar link curto</button><button type="button" class="btn btn-outline" id="share-custom-link">Compartilhar catálogo</button>`;
+
+  document.getElementById('copy-custom-link').onclick = () => {
+    const val = document.getElementById('custom-catalog-url-input').value;
+    navigator.clipboard.writeText(val).then(() => showToast('Link do catálogo copiado.', 'success'));
+  };
+
+  document.getElementById('copy-short-custom-link').onclick = async () => {
+    const btn = document.getElementById('copy-short-custom-link');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Encurtando...';
+    btn.disabled = true;
+
+    try {
+      const shortUrl = await getShortenedUrl(url);
+      await navigator.clipboard.writeText(shortUrl);
+      document.getElementById('custom-catalog-url-input').value = shortUrl;
+      showToast('Link curto copiado com sucesso!', 'success');
+    } catch (err) {
+      console.error('Erro ao copiar link curto:', err);
+      showToast('Copiado link padrão.', 'info');
+      navigator.clipboard.writeText(url);
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  };
+
+  document.getElementById('share-custom-link').onclick = () => {
+    const val = document.getElementById('custom-catalog-url-input').value;
+    navigator.share ? navigator.share({ title: 'Catálogo Dalbran', url: val }).catch(() => {}) : navigator.clipboard.writeText(val).then(() => showToast('Link copiado.', 'success'));
+  };
+}
+
+async function getShortenedUrl(longUrl) {
+  try {
+    const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+    if (res.ok) {
+      const shortUrl = await res.text();
+      if (shortUrl && shortUrl.startsWith('http')) return shortUrl.trim();
+    }
+  } catch (e) {
+    console.warn('TinyURL error, tentando fallback:', e);
+  }
+  try {
+    const res = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(longUrl)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.shorturl) return data.shorturl;
+    }
+  } catch (e) {
+    console.warn('is.gd error:', e);
+  }
+  return longUrl;
 }
 function shareCatalogUrl(relativeUrl, title) { const url = new URL(relativeUrl, window.location.href).href; if (navigator.share) navigator.share({ title, url }).catch(() => {}); else navigator.clipboard?.writeText(url).then(() => showToast('Link do catálogo copiado.', 'success')); }
 function escapeCatalogHtml(value) { return String(value || '').replace(/[&<>"']/g, char => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[char]); }

@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "exportedAt": "2026-08-12T15:40:11.673Z",
+  "products": [],
+  "settings": [
+    {
+      "id": "company",
+      "mensagemPadrao": "Agradecemos a preferência!",
+      "taxaCredito": 3.5,
+      "whatsapp": "",
+      "email": "",
+      "cnpj": "03.822.789/0001-54",
+      "taxaDebito": 1.5,
+      "endereco": "",
+      "razaoSocial": "Dalbran do Brasil-Distribuidora, Comercio e Servicos LTDA",
+      "nomeFantasia": "DALBRAN DISTRIBUIDORA",
+      "telefone": "",
+      "prazoValidadeDias": 1,
+      "metodoCalculoTaxa": "add",
+      "avisoEstoque": "Este orçamento possui validade limitada e está sujeito à disponibilidade de estoque, podendo os produtos esgotar sem aviso prévio."
+    }
+  ],
+  "quotes": []
+}
