@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dalbran Distribuidora</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e293b">
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <section id="view-login" class="view active">
+    <div class="login-card">
+      <div class="brand-logo">
+        <img id="login-logo-image" class="company-logo hidden" alt="Logo da empresa">
+        <h2 id="login-brand-name">DALBRAN</h2>
+        <p>Distribuidora</p>
+      </div>
+      
+      <form id="form-login">
+        <div class="form-group">
+          <label for="login-email">E-mail</label>
+          <input type="email" id="login-email" placeholder="admin@dalbran.com" required autocomplete="email">
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">Senha</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+      </form>
+    </div>
+  </section>
+
+  <div id="app-shell" class="app-shell hidden">
+    
+    <header class="app-header no-print">
+      <div class="header-brand">
+        <img id="header-logo-image" class="company-logo company-logo-header hidden" alt="Logo da empresa">
+      </div>
+
+      <div class="header-status">
+        <span id="connection-status" class="status-badge status-online">
+          <span class="status-dot"></span> <span id="status-text">🟢 Online</span>
+        </span>
+      </div>
+
+      <div class="header-user">
+        <span id="user-email-display"></span>
+        <button id="btn-font-decrease" class="btn btn-sm btn-outline" title="Diminuir fonte">A−</button>
+        <button id="btn-font-increase" class="btn btn-sm btn-outline" title="Aumentar fonte">A+</button>
+        <button id="btn-theme-toggle" class="btn btn-sm btn-outline" title="Alternar tema">◐</button>
+        <button id="btn-logout" class="btn btn-sm btn-outline">Sair</button>
+      </div>
+    </header>
+
+    <nav class="app-nav no-print">
+      <button class="nav-item active" data-target="view-dashboard">Dashboard</button>
+      <button class="nav-item" data-target="view-produtos">Produtos</button>
+      <button class="nav-item" data-target="view-clientes">Clientes</button>
+      <button class="nav-item" data-target="view-orcamento">Orçamento</button>
+      <button class="nav-item" data-target="view-pdv">Vendas (PDV)</button>
+      <button class="nav-item" data-target="view-catalogos">Catálogos</button>
+      <button class="nav-item" data-target="view-configuracoes">Configurações</button>
+    </nav>
+
+    <main class="app-content">
+
+      <section id="view-dashboard" class="view-content active">
+        <h2>Dashboard</h2>
+        <section class="mobile-quick-actions" aria-label="Atalhos rápidos">
+          <button type="button" data-dashboard-target="view-produtos"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v4H4zm0 6h16v10H4zm3 3v4h4v-4zm6 0v4h4v-4z"/></svg></span><span>Produtos</span></button>
+          <button type="button" data-dashboard-target="view-clientes"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></svg></span><span>Clientes</span></button>
+          <button type="button" data-dashboard-target="view-orcamento"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6zm8 1.8V7h3.2zM9 11h6v2H9zm0 4h6v2H9z"/></svg></span><span>Orçamento</span></button>
+          <button type="button" data-dashboard-target="view-pdv"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2h18v20H3zm3 3v5h12V5zm0 8v6h3v-6zm5 0v6h7v-6z"/></svg></span><span>PDV</span></button>
+          <button type="button" data-dashboard-target="view-catalogos"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16v18H4zm3 3v3h10V6zm0 5v6h4v-6zm6 0v2h4v-2zm0 4v2h4v-2z"/></svg></span><span>Catálogos</span></button>
+        </section>
+        <div class="metrics-grid">
+          <button class="metric-card metric-card-action" data-dashboard-target="view-produtos" type="button">
+            <h3>Produtos Ativos</h3>
+            <p class="metric-value" id="dash-active-products">0</p>
+            <small>Ver produtos</small>
+          </button>
+          <button class="metric-card metric-card-action" data-dashboard-target="view-produtos" type="button">
+            <h3>Total Cadastrados</h3>
+            <p class="metric-value" id="dash-total-products">0</p>
+            <small>Gerenciar catálogo</small>
+          </button>
+          <button class="metric-card metric-card-action" data-dashboard-target="view-clientes" type="button">
+            <h3>Total de Clientes</h3>
+            <p class="metric-value" id="dash-total-clients">0</p>
+            <small>Ver clientes</small>
+          </button>
+          <button class="metric-card metric-card-action" data-dashboard-target="view-orcamento" type="button">
+            <h3>Orçamentos Recentes</h3>
+            <p class="metric-value" id="dash-recent-quotes">0</p>
+            <small>Abrir orçamentos</small>
+          </button>
+          <button class="metric-card metric-card-action" data-dashboard-target="view-orcamento" type="button">
+            <h3>Total dos Orçamentos</h3>
+            <p class="metric-value" id="dash-total-quotes-value">R$ 0,00</p>
+            <small>Abrir orçamentos</small>
+          </button>
+          <button class="metric-card metric-card-action" data-dashboard-target="view-pdv" type="button">
+            <h3>Total de Vendas</h3>
+            <p class="metric-value" id="dash-total-sales">0</p>
+            <small>Abrir vendas</small>
+          </button>
+          <button class="metric-card metric-card-action" data-dashboard-target="view-pdv" type="button">
+            <h3>Valor das Vendas</h3>
+            <p class="metric-value" id="dash-total-sales-value">R$ 0,00</p>
+            <small>Abrir vendas</small>
+          </button>
+        </div>
+        <section class="financial-dashboard">
+          <div class="dashboard-section-header"><div><h3>Balanço financeiro</h3><span>Vendas finalizadas no período selecionado</span></div><div class="dashboard-period-controls"><select id="dash-period"><option value="month">Este mês</option><option value="week">Últimos 7 dias</option><option value="all">Todo o período</option><option value="custom">Data personalizada</option></select><input id="dash-date-start" type="date" aria-label="Data inicial"><input id="dash-date-end" type="date" aria-label="Data final"></div></div>
+          <div class="financial-summary"><div><span>Faturamento</span><strong id="dash-period-sales-value">R$ 0,00</strong></div><div><span>Vendas</span><strong id="dash-period-sales-count">0</strong></div><div><span>A receber</span><strong id="dash-period-receivable">R$ 0,00</strong></div></div>
+          <div id="dash-financial-list" class="financial-list"><p class="empty-state">Nenhuma venda no período.</p></div>
+        </section>
+        <section class="dashboard-clients">
+          <div class="dashboard-section-header">
+            <h3>Clientes cadastrados</h3>
+            <span id="dash-clients-count">0 clientes</span>
+          </div>
+          <div id="dash-clients-list" class="dashboard-clients-list">
+            <p class="empty-state">Nenhum cliente cadastrado.</p>
+          </div>
+        </section>
+      </section>
+
+      <section id="view-produtos" class="view-content">
+        <div class="view-header">
+          <h2>Gestão de Produtos</h2>
+        </div>
+        <p>Carregando catálogo de produtos...</p>
+      </section>
+
+      <section id="view-orcamento" class="view-content">
+        <div class="view-header">
+          <h2>Novo Orçamento</h2>
+        </div>
+        <p>Módulo de orçamentos...</p>
+      </section>
+
+      <section id="view-pdv" class="view-content">
+        <div class="view-header"><h2>Vendas (PDV)</h2></div>
+        <p>Carregando PDV...</p>
+      </section>
+
+      <section id="view-catalogos" class="view-content">
+        <div class="view-header"><h2>Catálogos visuais</h2></div>
+        <p>Carregando catálogos...</p>
+      </section>
+
+      <section id="view-clientes" class="view-content">
+        <h2>Clientes</h2>
+        <p>Carregando clientes...</p>
+      </section>
+
+      <section id="view-configuracoes" class="view-content">
+        <div class="view-header">
+          <h2>Configurações do Sistema</h2>
+        </div>
+        <p>Configurações de taxas, dados da empresa e backup...</p>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/produtos.js"></script>
+  <script src="js/clientes.js"></script>
+  <script src="js/configuracoes.js"></script>
+  <script src="js/orcamento.js"></script>
+  <script src="js/whatsapp.js"></script>
+  <script src="js/backup.js"></script>
+  <script src="catalogos/catalog-data.js"></script>
+  <script src="js/catalogos.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registrado:', reg.scope))
+          .catch(err => console.error('Erro no Service Worker:', err));
+      });
+    }
+  </script>
+</body>
+</html>
