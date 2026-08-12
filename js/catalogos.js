@@ -36,7 +36,9 @@ function renderCatalogosView() {
       ${catalogShortcut('5L', 'Catálogo 5 litros', 'Linha institucional e galões de 5 L.')}
     </div>
     <section class="custom-catalog-builder"><div class="dashboard-section-header"><div><h3>Catálogo personalizado</h3><span>Escolha os itens abaixo e gere o link visual para o cliente.</span></div><span id="custom-catalog-count">0 selecionados</span></div><div class="catalog-builder-toolbar"><select id="custom-catalog-source"><option value="all">2 L e 5 L</option><option value="2L">Somente 2 L</option><option value="5L">Somente 5 L</option></select><input id="custom-catalog-search" type="search" placeholder="Buscar produto"></div><div id="custom-catalog-products" class="custom-catalog-products"></div><div class="custom-catalog-actions"><button type="button" class="btn btn-outline" id="clear-custom-catalog">Limpar seleção</button><button type="button" class="btn btn-primary" id="generate-custom-catalog">Gerar link do catálogo</button></div><div id="custom-catalog-link" class="custom-catalog-link hidden"></div><p class="catalog-share-note">O link funciona para qualquer pessoa quando o sistema estiver hospedado em uma URL pública. Localmente, ele abre no mesmo dispositivo/rede onde o sistema estiver disponível.</p></section>`;
-  ['2L', '5L'].forEach(size => { document.getElementById(`open-catalog-${size}`).onclick = () => window.open(`catalogos/${size}/index.html`, '_blank', 'noopener'); document.getElementById(`share-catalog-${size}`).onclick = () => shareCatalogUrl(`catalogos/${size}/index.html`, `Catálogo Dalbran ${size}`); });
+  ['2L', '5L'].forEach(size => {
+    document.getElementById(`share-catalog-${size}`).onclick = () => shareCatalogUrl(`catalogos/${size}/index.html`, `Catálogo Dalbran ${size}`); 
+  });
   document.getElementById('custom-catalog-search').oninput = renderCustomCatalogProducts;
   document.getElementById('custom-catalog-source').onchange = renderCustomCatalogProducts;
   document.getElementById('clear-custom-catalog').onclick = () => { window.customCatalogSelection = []; renderCustomCatalogProducts(); document.getElementById('custom-catalog-link').classList.add('hidden'); };
@@ -44,7 +46,7 @@ function renderCatalogosView() {
   renderCustomCatalogProducts();
 }
 
-function catalogShortcut(size, title, description) { return `<article class="catalog-card"><div class="catalog-card-icon">${size}</div><div><h3>${title}</h3><p>${description}</p></div><div class="catalog-card-actions"><button type="button" class="btn btn-primary" id="open-catalog-${size}">Abrir catálogo</button><button type="button" class="btn btn-outline" id="share-catalog-${size}">Compartilhar</button></div></article>`; }
+function catalogShortcut(size, title, description) { return `<article class="catalog-card"><div class="catalog-card-icon">${size}</div><div><h3>${title}</h3><p>${description}</p></div><div class="catalog-card-actions"><a href="catalogos/${size}/index.html" target="_blank" rel="noopener" class="btn btn-primary" id="open-catalog-${size}" style="text-decoration:none;">Abrir catálogo</a><button type="button" class="btn btn-outline" id="share-catalog-${size}">Compartilhar</button></div></article>`; }
 function getCatalogItems() { return Object.values(window.catalogSourceProducts).flat(); }
 function renderCustomCatalogProducts() {
   const container = document.getElementById('custom-catalog-products'); if (!container) return;
@@ -126,5 +128,22 @@ async function getShortenedUrl(longUrl) {
   }
   return longUrl;
 }
-function shareCatalogUrl(relativeUrl, title) { const url = new URL(relativeUrl, window.location.href).href; if (navigator.share) navigator.share({ title, url }).catch(() => {}); else navigator.clipboard?.writeText(url).then(() => showToast('Link do catálogo copiado.', 'success')); }
+function shareCatalogUrl(relativeUrl, title) { 
+  const url = new URL(relativeUrl, window.location.href).href; 
+  if (navigator.share) {
+    navigator.share({ title, url }).catch(() => {}); 
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('Link do catálogo copiado.', 'success')); 
+  } else {
+    const input = document.createElement('input');
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    try {
+      document.execCommand('copy');
+      showToast('Link do catálogo copiado.', 'success');
+    } catch(e) {}
+    document.body.removeChild(input);
+  }
+}
 function escapeCatalogHtml(value) { return String(value || '').replace(/[&<>"']/g, char => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[char]); }

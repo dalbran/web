@@ -185,108 +185,24 @@ function renderOrcamentoView(viewId = 'view-orcamento', mode = 'orcamento') {
       <h2>${isPdv ? 'Nova Venda (PDV)' : 'Novo Orçamento'}</h2>
     </div>
 
-    <div class="orcamento-layout ${isPdv ? 'pdv-mode' : ''}">
-      <div style="display:grid; grid-template-columns: 1fr 380px; gap:1.5rem;" class="orcamento-grid">
-      
-      <div class="document-items-column">
-        <div style="background:white; padding:1.25rem; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:1rem;">
-          <h3>${isPdv ? 'Adicionar Item à Venda' : 'Adicionar Item ao Orçamento'}</h3>
-          
-          <div class="form-group" style="margin-top:1rem; margin-bottom:.5rem;">
-            <label>Pesquisar produto</label>
-            <input type="search" id="orc-search-produto" placeholder="Digite parte do nome, por exemplo: cloro" autocomplete="off">
-          </div>
-          <div id="orc-search-results" class="product-search-results" aria-live="polite"></div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem; margin-top:1rem;">
-            <div class="form-group">
-              <label>Selecione o Produto</label>
-              <select id="orc-select-produto" style="width:100%; padding:0.6rem;">
-                <option value="">-- Selecione um produto --</option>
-              </select>
-            </div>
+    <!-- 1. DADOS DO CLIENTE E VENDEDOR (Etapa 1) -->
+    <section class="step-section step-section-client" data-step="1">
+      <div class="step-card">
+        <h3><i class="fa-solid fa-user"></i> 1. Dados do Cliente e Vendedor</h3>
+        <p style="color:#64748b; font-size:0.88rem; margin-bottom:1.25rem;">Informe o vendedor responsável e os dados do cliente.</p>
 
-            <div class="form-group">
-              <label>Variação / Volume</label>
-              <select id="orc-select-variacao" style="width:100%; padding:0.6rem;" disabled>
-                <option value="">-- Selecione o produto primeiro --</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.75rem;">
-            <div class="form-group">
-              <label>Fragrância</label>
-              <select id="orc-select-fragrancia" style="width:100%; padding:0.6rem;" disabled>
-                <option value="">-- Nenhuma / Padrão --</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Tabela de Preço</label>
-              <select id="orc-select-tabela" style="width:100%; padding:0.6rem;">
-                <option value="atacado">Atacado</option>
-                <option value="varejo">Varejo</option>
-                <option value="notaFiscal">Nota Fiscal</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Quantidade</label>
-              <div class="quantity-control">
-                <button type="button" id="btn-qtd-minus" aria-label="Diminuir quantidade">−</button>
-                <input type="number" id="orc-input-qtd" min="1" value="1" inputmode="numeric">
-                <button type="button" id="btn-qtd-plus" aria-label="Aumentar quantidade">+</button>
-              </div>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-            <div class="form-group">
-              <label>Preço Unitário (R$)</label>
-              <input type="number" step="0.01" id="orc-input-preco" placeholder="0.00" readonly style="width:100%; padding:0.6rem; background:#f8fafc;">
-            </div>
-            <div style="display:flex; align-items:flex-end;">
-              <button type="button" id="btn-add-item" class="btn btn-primary" style="width:100%; height:42px;">+ Adicionar Item</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:white; padding:1.25rem; border-radius:8px; border:1px solid #e2e8f0;">
-          <h3>${isPdv ? 'Itens da Venda' : 'Itens do Orçamento'}</h3>
-          <div style="overflow-x:auto; margin-top:0.75rem;">
-            <table style="width:100%; border-collapse:collapse;">
-              <thead>
-                <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0; text-align:left; font-size:0.85rem;">
-                  <th style="padding:0.5rem;">Item</th>
-                  <th style="padding:0.5rem;">Qtd</th>
-                  <th style="padding:0.5rem;">Unit.</th>
-                  <th style="padding:0.5rem;">Total</th>
-                  <th style="padding:0.5rem; text-align:right;">Ação</th>
-                </tr>
-              </thead>
-              <tbody id="cart-table-body">
-                ${generateCartRows()}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="document-client-column">
-        <div class="document-client-card" style="background:white; padding:1.25rem; border-radius:8px; border:1px solid #e2e8f0;">
-          <section class="mobile-flow-client"><h3>Dados do Cliente</h3>
-
-          <div class="form-group" style="margin-top:.75rem;">
-            <label>vendedor</label>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem;">
+          <div class="form-group">
+            <label>Vendedor responsável</label>
             <select id="orc-select-vendedor"><option value="">Selecione o vendedor</option></select>
           </div>
 
-          <div class="form-group" style="margin-top:0.75rem;">
-            <label>Cliente cadastrado</label>
+          <div class="form-group">
+            <label>Cliente cadastrado (opcional)</label>
             <select id="orc-select-cliente"><option value="">Preencher cliente manualmente</option></select>
           </div>
-          
-          <div class="form-group" style="margin-top:0.75rem;">
+
+          <div class="form-group">
             <label>Nome do Cliente / Empresa</label>
             <input type="text" id="orc-cliente-nome" placeholder="Ex: Mercado Silva">
           </div>
@@ -295,13 +211,113 @@ function renderOrcamentoView(viewId = 'view-orcamento', mode = 'orcamento') {
             <label>Telefone / WhatsApp</label>
             <input type="text" id="orc-cliente-telefone" placeholder="(00) 00000-0000">
           </div>
-          </section>
-          <section class="mobile-flow-finish">
-          <hr style="margin:1rem 0;">
+        </div>
 
-          <h3>Forma de Pagamento</h3>
+        <div class="step-footer-actions">
+          <div></div>
+          <button type="button" class="btn btn-primary step-btn-next">
+            Adicionar Itens →
+          </button>
+        </div>
+      </div>
+    </section>
 
-          <div class="form-group" style="margin-top:0.75rem;">
+    <!-- 2. ADICIONAR ITENS (Etapa 2) -->
+    <section class="step-section step-section-items" data-step="2">
+      <div class="step-card">
+        <h3><i class="fa-solid fa-cart-plus"></i> 2. Adicionar Itens ${isPdv ? 'à Venda' : 'ao Orçamento'}</h3>
+        
+        <div class="form-group" style="margin-top:1rem; margin-bottom:.5rem;">
+          <label>Pesquisar produto no estoque</label>
+          <input type="search" id="orc-search-produto" placeholder="Digite parte do nome do produto..." autocomplete="off">
+        </div>
+        <div id="orc-search-results" class="product-search-results" aria-live="polite"></div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:0.75rem; margin-top:1rem;">
+          <div class="form-group">
+            <label>Selecione o Produto</label>
+            <select id="orc-select-produto" style="width:100%; padding:0.6rem;">
+              <option value="">-- Selecione um produto --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Variação / Volume</label>
+            <select id="orc-select-variacao" style="width:100%; padding:0.6rem;" disabled>
+              <option value="">-- Selecione o produto primeiro --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Fragrância / Opção</label>
+            <select id="orc-select-fragrancia" style="width:100%; padding:0.6rem;" disabled>
+              <option value="">-- Nenhuma / Padrão --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Tabela de Preço</label>
+            <select id="orc-select-tabela" style="width:100%; padding:0.6rem;">
+              <option value="atacado">Atacado</option>
+              <option value="varejo">Varejo</option>
+              <option value="notaFiscal">Nota Fiscal</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:0.75rem; margin-top:0.75rem; align-items:end;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Quantidade</label>
+            <div class="quantity-control">
+              <button type="button" id="btn-qtd-minus" aria-label="Diminuir quantidade">−</button>
+              <input type="number" id="orc-input-qtd" min="1" value="1" inputmode="numeric">
+              <button type="button" id="btn-qtd-plus" aria-label="Aumentar quantidade">+</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Preço Unitário (R$)</label>
+            <input type="number" step="0.01" id="orc-input-preco" placeholder="0.00" readonly style="width:100%; padding:0.6rem; background:#f8fafc;">
+          </div>
+
+          <button type="button" id="btn-add-item" class="btn btn-primary" style="height:46px; white-space:nowrap; padding:0 1.25rem;">+ Adicionar Item</button>
+        </div>
+      </div>
+
+      <!-- Tabela do Carrinho -->
+      <div class="step-card">
+        <h3><i class="fa-solid fa-list-check"></i> Itens Selecionados (${isPdv ? 'Venda' : 'Orçamento'})</h3>
+        <div style="overflow-x:auto; margin-top:0.75rem;">
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0; text-align:left; font-size:0.85rem;">
+                <th style="padding:0.5rem;">Item</th>
+                <th style="padding:0.5rem;">Qtd</th>
+                <th style="padding:0.5rem;">Unit.</th>
+                <th style="padding:0.5rem;">Total</th>
+                <th style="padding:0.5rem; text-align:right;">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="cart-table-body">
+              ${generateCartRows()}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="step-footer-actions">
+          <button type="button" class="btn btn-outline step-btn-prev">← Voltar para Cliente</button>
+          <button type="button" class="btn btn-primary step-btn-next">Ir para Pagamento →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. FORMA DE PAGAMENTO E FINALIZAÇÃO (Etapa 3 - FORMA DE PAGAMENTO POR ÚLTIMO) -->
+    <section class="step-section step-section-finish" data-step="3">
+      <div class="step-card">
+        <h3><i class="fa-solid fa-credit-card"></i> 3. Forma de Pagamento e Finalização</h3>
+        
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-top:1rem;">
+          <div class="form-group">
             <label>Meio de Pagamento</label>
             <select id="orc-forma-pagamento" style="width:100%; padding:0.6rem;">
               <option value="pix">PIX (Sem Taxa)</option>
@@ -312,58 +328,88 @@ function renderOrcamentoView(viewId = 'view-orcamento', mode = 'orcamento') {
               <option value="receber">A receber</option>
             </select>
           </div>
-          <div id="orc-pix-panel" class="pix-panel hidden"><label>Chave PIX para esta operação</label><select id="orc-pix-key"><option value="celular">Celular</option><option value="cnpj">CNPJ</option></select><button type="button" id="btn-generate-pix" class="btn btn-outline btn-block">Gerar PIX copia e cola / QR Code</button><div id="orc-pix-result" class="pix-result"></div></div>
-          <div id="orc-boleto-panel" class="boleto-panel hidden"><label>URL do boleto desta venda</label><input type="url" id="orc-boleto-url" placeholder="https://drive.google.com/... ou outra URL externa"><small>Este link fica vinculado somente a esta venda.</small></div>
 
           <div class="form-group">
             <label>Desconto Adicional (R$)</label>
             <input type="number" step="0.01" id="orc-desconto" value="0.00" style="width:100%; padding:0.6rem;">
           </div>
-          <div class="form-group"><label>Prazo de entrega / previsão</label><input type="text" id="orc-prazo-entrega" placeholder="Ex.: 2 dias úteis"></div>
-          <div class="form-group"><label>Observação extra</label><textarea id="orc-observacao" rows="2" placeholder="Ex.: sujeito à disponibilidade, conferir pedido na entrega"></textarea></div>
 
-          <div style="background:#f8fafc; padding:1rem; border-radius:6px; border:1px solid #e2e8f0; margin:1rem 0;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
-              <span>Subtotal:</span>
-              <strong id="orc-subtotal-val">R$ 0,00</strong>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; color:#ef4444;">
-              <span>Desconto:</span>
-              <span id="orc-desconto-val">- R$ 0,00</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; color:#3b82f6;">
-              <span>Taxa Cartão:</span>
-              <span id="orc-taxa-val">+ R$ 0,00</span>
-            </div>
-            <hr style="margin:0.5rem 0;">
-            <div style="display:flex; justify-content:space-between; font-size:1.2rem;">
-              <strong>Total Geral:</strong>
-              <strong id="orc-total-val" style="color:#0284c7;">R$ 0,00</strong>
-            </div>
+          <div class="form-group">
+            <label>Prazo de entrega / previsão</label>
+            <input type="text" id="orc-prazo-entrega" placeholder="Ex.: 2 dias úteis">
           </div>
+        </div>
 
-          <div style="display:flex; flex-direction:column; gap:0.5rem;">
-            <button id="btn-save-orcamento" class="btn btn-primary btn-block">${isPdv ? 'Finalizar venda' : 'Salvar Orçamento'}</button>
-            <button id="btn-whatsapp-orcamento" class="btn btn-outline btn-block" style="border-color:#10b981; color:#10b981;">${isPdv ? 'Compartilhar venda no WhatsApp' : 'Enviar via WhatsApp'}</button>
-            <button id="btn-print-cupom" class="btn btn-outline btn-block">${isPdv ? 'Imprimir cupom não fiscal' : 'Imprimir Orçamento'}</button>
-            ${isPdv ? '<button type="button" class="btn btn-outline btn-block" disabled title="Disponível em breve">Emitir nota fiscal (em breve)</button>' : ''}
+        <div id="orc-pix-panel" class="pix-panel hidden" style="margin-top:0.75rem;">
+          <label>Chave PIX para esta operação</label>
+          <select id="orc-pix-key"><option value="celular">Celular</option><option value="cnpj">CNPJ</option></select>
+          <button type="button" id="btn-generate-pix" class="btn btn-outline btn-block">Gerar PIX copia e cola / QR Code</button>
+          <div id="orc-pix-result" class="pix-result"></div>
+        </div>
+
+        <div id="orc-boleto-panel" class="boleto-panel hidden" style="margin-top:0.75rem;">
+          <label>URL do boleto desta venda</label>
+          <input type="url" id="orc-boleto-url" placeholder="https://drive.google.com/... ou outra URL externa">
+          <small>Este link fica vinculado somente a esta venda.</small>
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label>Observação extra</label>
+          <textarea id="orc-observacao" rows="2" placeholder="Ex.: sujeito à disponibilidade, conferir pedido na entrega"></textarea>
+        </div>
+
+        <!-- RESUMO FINANCEIRO -->
+        <div style="background:#f8fafc; padding:1.25rem; border-radius:8px; border:1px solid #e2e8f0; margin:1.25rem 0;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+            <span>Subtotal:</span>
+            <strong id="orc-subtotal-val">R$ 0,00</strong>
           </div>
-          </section>
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; color:#ef4444;">
+            <span>Desconto:</span>
+            <span id="orc-desconto-val">- R$ 0,00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; color:#3b82f6;">
+            <span>Taxa Cartão:</span>
+            <span id="orc-taxa-val">+ R$ 0,00</span>
+          </div>
+          <hr style="margin:0.5rem 0;">
+          <div style="display:flex; justify-content:space-between; font-size:1.3rem;">
+            <strong>Total Geral:</strong>
+            <strong id="orc-total-val" style="color:#0284c7;">R$ 0,00</strong>
+          </div>
+        </div>
+
+        <!-- BOTÕES DE AÇÃO PRINCIPAIS -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:0.75rem;">
+          <button id="btn-save-orcamento" class="btn btn-primary">${isPdv ? 'Finalizar Venda' : 'Salvar Orçamento'}</button>
+          <button id="btn-whatsapp-orcamento" class="btn btn-outline" style="border-color:#10b981; color:#10b981;">${isPdv ? 'Compartilhar no WhatsApp' : 'Enviar via WhatsApp'}</button>
+          <button id="btn-print-cupom" class="btn btn-outline">${isPdv ? 'Imprimir Cupom' : 'Imprimir Orçamento'}</button>
+        </div>
+
+        <div class="step-footer-actions">
+          <button type="button" class="btn btn-outline step-btn-prev">← Voltar para Itens</button>
+          <button type="button" class="btn btn-secondary step-btn-next">Ver ${isPdv ? 'Vendas Salvas' : 'Orçamentos Salvos'} →</button>
         </div>
       </div>
+    </section>
 
-      </div>
-
-      <aside class="saved-quotes-sidebar">
-        <div class="saved-quotes-header">
-          <h3>${isPdv ? 'Vendas salvas' : 'Orçamentos salvos'}</h3>
-          <span id="saved-quotes-count">${(window.quotesCache || []).length}</span>
+    <!-- 4. SEÇÃO ABAIXO: DOCUMENTOS SALVOS (Etapa 4) -->
+    <section class="step-section step-section-saved" data-step="4">
+      <div class="step-card saved-quotes-sidebar" style="margin-bottom:0;">
+        <div class="saved-quotes-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <h3><i class="fa-solid fa-clock-rotate-left"></i> ${isPdv ? 'Vendas Salvas no Sistema' : 'Orçamentos Salvos no Sistema'}</h3>
+          <span id="saved-quotes-count" class="badge" style="background:var(--primary); color:white; padding:4px 10px; border-radius:12px; font-weight:700;">${(window.quotesCache || []).length}</span>
         </div>
-        <input id="saved-documents-search" class="saved-documents-search" type="search" placeholder="Buscar por número ou data">
+        <input id="saved-documents-search" class="saved-documents-search" type="search" placeholder="Buscar por número, cliente ou data..." style="margin-bottom:1rem;">
         <div id="saved-quotes-list" class="saved-quotes-list"></div>
-        <div id="saved-documents-pagination" class="saved-documents-pagination"></div>
-      </aside>
-    </div>
+        <div id="saved-documents-pagination" class="saved-documents-pagination" style="margin-top:1rem;"></div>
+
+        <div class="step-footer-actions">
+          <button type="button" class="btn btn-outline step-btn-prev">← Voltar ao Pagamento</button>
+          <button type="button" class="btn btn-primary" onclick="${isPdv ? 'window.openPdvView(true)' : 'window.openQuoteView(true)'}">+ Novo ${isPdv ? 'Pedido' : 'Orçamento'}</button>
+        </div>
+      </div>
+    </section>
 
     <div id="print-area" class="print-document" style="display:none;"></div>
     <div id="modal-print-type" class="modal hidden print-modal">
@@ -380,8 +426,8 @@ function renderOrcamentoView(viewId = 'view-orcamento', mode = 'orcamento') {
   `;
 
   bindOrcamentoEvents();
-  setupMobileDocumentFlow(container, isPdv);
-  
+  setupDocumentFlow(container, isPdv);
+
   // Preenche a lista com os dados em cache no momento da renderização
   window.populateOrcamentoProductsSelect();
   window.populateOrcamentoClientsSelect();
@@ -389,20 +435,105 @@ function renderOrcamentoView(viewId = 'view-orcamento', mode = 'orcamento') {
   if (typeof renderSavedQuotesSidebar === 'function') renderSavedQuotesSidebar();
 }
 
-function setupMobileDocumentFlow(container, isPdv) {
+function setupDocumentFlow(container, isPdv) {
+  const oldFlow = container.querySelector('.document-flow-wizard');
+  if (oldFlow) oldFlow.remove();
+
   const flow = document.createElement('div');
-  flow.className = 'mobile-document-flow';
-  flow.innerHTML = `<div class="mobile-flow-progress"><span class="active">1</span><i></i><span>2</span><i></i><span>3</span><i></i><span>4</span></div><strong class="mobile-flow-title">Dados do cliente</strong><div class="mobile-flow-controls"><button type="button" class="btn btn-outline" id="mobile-flow-prev" disabled>← Voltar</button><button type="button" class="btn btn-primary" id="mobile-flow-next">Próximo →</button></div>`;
+  flow.className = 'document-flow-wizard';
+  flow.innerHTML = `
+    <div class="flow-progress-bar">
+      <button type="button" class="flow-step-btn active" data-step="0"><span class="step-num">1</span> <span class="step-label">Cliente</span></button>
+      <i class="flow-line"></i>
+      <button type="button" class="flow-step-btn" data-step="1"><span class="step-num">2</span> <span class="step-label">Itens</span></button>
+      <i class="flow-line"></i>
+      <button type="button" class="flow-step-btn" data-step="2"><span class="step-num">3</span> <span class="step-label">Pagamento</span></button>
+      <i class="flow-line"></i>
+      <button type="button" class="flow-step-btn" data-step="3"><span class="step-num">4</span> <span class="step-label">${isPdv ? 'Vendas' : 'Orçamentos'}</span></button>
+    </div>
+    <div class="flow-header-controls">
+      <strong class="flow-current-title">Dados do cliente</strong>
+      <div class="flow-action-buttons">
+        <button type="button" class="btn btn-outline" id="flow-prev-btn" disabled>← Voltar</button>
+        <button type="button" class="btn btn-primary" id="flow-next-btn">Próximo →</button>
+      </div>
+    </div>
+  `;
+
   container.querySelector('.view-header').after(flow);
-  const sections = [container.querySelector('.mobile-flow-client'), container.querySelector('.document-items-column'), container.querySelector('.mobile-flow-finish'), container.querySelector('.saved-quotes-sidebar')];
-  const titles = ['Dados do cliente', isPdv ? 'Itens da venda' : 'Itens do orçamento', 'Pagamento e finalização', isPdv ? 'Vendas salvas' : 'Orçamentos salvos'];
-  let step = 0; let touchStart = 0;
-  const render = () => { container.dataset.mobileStep = String(step + 1); flow.querySelector('.mobile-flow-title').textContent = titles[step]; flow.querySelectorAll('.mobile-flow-progress span').forEach((dot, index) => dot.classList.toggle('active', index <= step)); flow.querySelector('#mobile-flow-prev').disabled = step === 0; flow.querySelector('#mobile-flow-next').textContent = step === sections.length - 1 ? 'Concluir' : 'Próximo →'; sections[step]?.scrollIntoView({ block:'start', behavior:'smooth' }); };
-  flow.querySelector('#mobile-flow-prev').onclick = () => { if (step > 0) { step--; render(); } };
-  flow.querySelector('#mobile-flow-next').onclick = () => { if (step < sections.length - 1) { step++; render(); } };
-  container.addEventListener('touchstart', event => { touchStart = event.changedTouches[0].screenX; }, { passive:true });
-  container.addEventListener('touchend', event => { const diff = event.changedTouches[0].screenX - touchStart; if (Math.abs(diff) < 70) return; if (diff < 0 && step < sections.length - 1) step++; if (diff > 0 && step > 0) step--; render(); }, { passive:true });
-  render();
+
+  const sections = [
+    container.querySelector('.step-section-client'),
+    container.querySelector('.step-section-items'),
+    container.querySelector('.step-section-finish'),
+    container.querySelector('.step-section-saved')
+  ];
+
+  const titles = [
+    'Dados do cliente e vendedor',
+    isPdv ? 'Adicionar itens à venda' : 'Adicionar itens ao orçamento',
+    'Forma de pagamento e finalização',
+    isPdv ? 'Vendas salvas no sistema' : 'Orçamentos salvos no sistema'
+  ];
+
+  let currentStep = 0;
+
+  const renderStep = (stepIndex) => {
+    currentStep = Math.max(0, Math.min(stepIndex, sections.length - 1));
+    container.dataset.documentStep = String(currentStep + 1);
+
+    flow.querySelector('.flow-current-title').textContent = titles[currentStep];
+    flow.querySelectorAll('.flow-step-btn').forEach((btn, idx) => {
+      btn.classList.toggle('active', idx === currentStep);
+      btn.classList.toggle('completed', idx < currentStep);
+    });
+
+    const prevBtn = flow.querySelector('#flow-prev-btn');
+    const nextBtn = flow.querySelector('#flow-next-btn');
+
+    prevBtn.disabled = (currentStep === 0);
+    if (currentStep === sections.length - 1) {
+      nextBtn.textContent = '+ Novo ' + (isPdv ? 'pedido' : 'orçamento');
+    } else if (currentStep === 2) {
+      nextBtn.textContent = isPdv ? 'Finalizar Venda →' : 'Salvar Orçamento →';
+    } else {
+      nextBtn.textContent = 'Próximo →';
+    }
+
+    sections.forEach((sec, idx) => {
+      if (sec) sec.style.display = idx === currentStep ? 'block' : 'none';
+    });
+
+    window.scrollTo({ top: container.offsetTop - 60, behavior: 'smooth' });
+  };
+
+  // Botões de progresso do topo
+  flow.querySelectorAll('.flow-step-btn').forEach((btn, idx) => {
+    btn.onclick = () => renderStep(idx);
+  });
+
+  // Botões do cabeçalho do wizard
+  flow.querySelector('#flow-prev-btn').onclick = () => renderStep(currentStep - 1);
+  flow.querySelector('#flow-next-btn').onclick = () => {
+    if (currentStep < sections.length - 1) {
+      renderStep(currentStep + 1);
+    } else {
+      if (isPdv) window.openPdvView(true); else window.openQuoteView(true);
+    }
+  };
+
+  // Botões de rodapé das seções
+  container.querySelectorAll('.step-btn-prev').forEach(btn => {
+    btn.onclick = () => renderStep(currentStep - 1);
+  });
+  container.querySelectorAll('.step-btn-next').forEach(btn => {
+    btn.onclick = () => renderStep(currentStep + 1);
+  });
+
+  // Função pública global para forçar troca de etapa (ex: ao salvar)
+  window.goToDocumentStep = (stepIdx) => renderStep(stepIdx);
+
+  renderStep(0);
 }
 
 window.openQuoteView = function(reset = true) {
@@ -883,6 +1014,9 @@ async function saveOrcamento() {
       savedQuoteId = savedDocument.id;
     }
     showToast(documentMode === 'pdv' ? 'Venda salva com sucesso!' : 'Orçamento salvo com sucesso!', "success");
+    if (typeof window.goToDocumentStep === 'function') {
+      window.goToDocumentStep(3);
+    }
     return true;
   } catch (err) {
     console.error("Erro ao salvar orçamento:", err);
@@ -925,22 +1059,75 @@ async function printQuote(printType) {
   const vendedor = getSelectedVendedor();
   const totals = calculateTotals();
   const isThermal = printType === '80mm' || printType === '58mm';
-  const printArea = document.getElementById('print-area');
+
+  let printArea = document.getElementById('print-area');
+  if (!printArea) {
+    printArea = document.createElement('div');
+    printArea.id = 'print-area';
+    document.body.appendChild(printArea);
+  } else if (printArea.parentElement !== document.body) {
+    document.body.appendChild(printArea);
+  }
+
   printArea.className = `print-document print-${printType}`;
-  printArea.style.fontFamily = settings.fonteCupom || 'Arial';
-  printArea.style.fontSize = `${settings.tamanhoFonteCupom || 12}px`;
+  printArea.style.fontFamily = isThermal ? "'Courier New', Courier, monospace" : (settings.fonteCupom || "'Plus Jakarta Sans', Arial, sans-serif");
+  printArea.style.fontSize = `${settings.tamanhoFonteCupom || (isThermal ? 11 : 12)}px`;
   printArea.style.display = 'block';
+
   printArea.innerHTML = `
-    <header class="print-header">${settings.logoCupomUrl || settings.logoUrl ? `<img class="print-logo" src="${settings.logoCupomUrl || settings.logoUrl}" alt="Logo">` : ''}<h1>${settings.nomeFantasia || 'DALBRAN DISTRIBUIDORA'}</h1><p>${settings.razaoSocial || ''}</p><p>CNPJ: ${settings.cnpj || ''}</p><p>${settings.whatsapp || settings.telefone || ''}</p></header>
+    <header class="print-header">
+      ${(settings.logoCupomUrl || settings.logoUrl) ? `<img class="print-logo" src="${settings.logoCupomUrl || settings.logoUrl}" alt="Logo">` : ''}
+      <h1>${escapeProductHtml(settings.nomeFantasia || 'DALBRAN DISTRIBUIDORA')}</h1>
+      <p>${escapeProductHtml(settings.razaoSocial || '')}</p>
+      <p>CNPJ: ${escapeProductHtml(settings.cnpj || '')}</p>
+      <p>${escapeProductHtml(settings.whatsapp || settings.telefone || '')}</p>
+    </header>
     <div class="print-title">${documentMode === 'pdv' ? 'CUPOM NÃO FISCAL' : 'ORÇAMENTO'} Nº ${getQuoteNumber(documentMode === 'pdv' ? 'VEN' : 'ORC')}</div>
-    <div class="print-meta"><span>Data: ${formatDateTime(new Date())}</span><span>Cliente: ${clienteNome}</span><span>Telefone: ${clienteTelefone}</span><span>Vendedor: ${vendedor?.nome || (typeof auth !== 'undefined' ? auth.currentUser?.email : '') || '-'}</span></div>
-    <table class="print-items"><thead><tr><th>Qtd</th><th>Item</th>${isThermal ? '' : '<th>Unitário</th>'}<th>Total</th></tr></thead><tbody>
-      ${cart.map(item => `<tr><td>${item.quantidade}x</td><td>${item.nome} ${item.volume}<br><small>${item.fragrancia}</small></td>${isThermal ? '' : `<td>${formatCurrency(item.precoUnitario)}</td>`}<td>${formatCurrency(item.subtotal)}</td></tr>`).join('')}
-    </tbody></table>
-    <section class="print-totals"><p><span>Subtotal</span><span>${formatCurrency(totals.subtotal)}</span></p><p><span>Desconto</span><span>- ${formatCurrency(totals.desconto)}</span></p><p><span>Taxa</span><span>+ ${formatCurrency(totals.valorTaxa)}</span></p><p class="print-total"><span>TOTAL</span><span>${formatCurrency(totals.totalGeral)}</span></p><p><span>Pagamento</span><span>${totals.formaPag.toUpperCase()}</span></p></section>
-    <footer class="print-footer">${document.getElementById('orc-prazo-entrega').value ? `Prazo de entrega: ${document.getElementById('orc-prazo-entrega').value}<br>` : ''}${document.getElementById('orc-observacao').value ? `${document.getElementById('orc-observacao').value}<br>` : ''}${settings.exibirAvisoNoCupom !== false && settings.avisoEstoque ? `${settings.avisoEstoque}<br>` : ''}<strong>${settings.mensagemPadrao || 'Obrigado pela preferência!'}</strong></footer>`;
+    <div class="print-meta">
+      <span>Data: ${formatDateTime(new Date())}</span>
+      <span>Cliente: ${escapeProductHtml(clienteNome)}</span>
+      <span>Telefone: ${escapeProductHtml(clienteTelefone)}</span>
+      <span>Vendedor: ${escapeProductHtml(vendedor?.nome || (typeof auth !== 'undefined' ? auth.currentUser?.email : '') || '-')}</span>
+    </div>
+    <table class="print-items">
+      <thead>
+        <tr>
+          <th>Qtd</th>
+          <th>Item</th>
+          ${isThermal ? '' : '<th>Unitário</th>'}
+          <th style="text-align:right;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${cart.map(item => `
+          <tr>
+            <td>${item.quantidade}x</td>
+            <td>${escapeProductHtml(item.nome)} ${escapeProductHtml(item.volume)}<br><small style="color:#555;">${escapeProductHtml(item.fragrancia)}</small></td>
+            ${isThermal ? '' : `<td>${formatCurrency(item.precoUnitario)}</td>`}
+            <td style="text-align:right;">${formatCurrency(item.subtotal)}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <section class="print-totals">
+      <p><span>Subtotal</span><span>${formatCurrency(totals.subtotal)}</span></p>
+      <p><span>Desconto</span><span>- ${formatCurrency(totals.desconto)}</span></p>
+      <p><span>Taxa</span><span>+ ${formatCurrency(totals.valorTaxa)}</span></p>
+      <p class="print-total"><span>TOTAL</span><span>${formatCurrency(totals.totalGeral)}</span></p>
+      <p><span>Pagamento</span><span>${totals.formaPag.toUpperCase()}</span></p>
+    </section>
+    <footer class="print-footer">
+      ${document.getElementById('orc-prazo-entrega')?.value ? `Prazo de entrega: ${escapeProductHtml(document.getElementById('orc-prazo-entrega').value)}<br>` : ''}
+      ${document.getElementById('orc-observacao')?.value ? `${escapeProductHtml(document.getElementById('orc-observacao').value)}<br>` : ''}
+      ${settings.exibirAvisoNoCupom !== false && settings.avisoEstoque ? `${escapeProductHtml(settings.avisoEstoque)}<br>` : ''}
+      <strong style="display:block; margin-top:4px;">${escapeProductHtml(settings.mensagemPadrao || 'Obrigado pela preferência!')}</strong>
+    </footer>
+  `;
+
   window.print();
-  window.setTimeout(() => { printArea.style.display = 'none'; }, 250);
+  window.setTimeout(() => {
+    if (printArea) printArea.style.display = 'none';
+  }, 500);
 }
 
 // Atualiza Métricas no Dashboard

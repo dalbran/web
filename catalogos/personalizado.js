@@ -249,3 +249,151 @@ function exportAsImage() {
         btn.innerHTML = originalBtnText;
     }
 }
+
+// =========================================================
+// COMPARTILHAMENTO
+// =========================================================
+
+function openSharePanel() {
+    const modal = document.getElementById('shareModal');
+    const input = document.getElementById('shareLinkInput');
+    const shortText = document.getElementById('shortLinkText');
+
+    // Preenche com o link atual e reseta estado
+    input.value = window.location.href;
+    if (shortText) shortText.textContent = 'Gerar Link Curto';
+    resetCopyButton();
+
+    // Exibe botão nativo se o navegador suportar (mobile)
+    const nativeBtn = document.getElementById('btnNativeShare');
+    if (nativeBtn) {
+        nativeBtn.style.display = navigator.share ? 'flex' : 'none';
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSharePanel(event) {
+    if (event && event.target && event.target.id !== 'shareModal') return;
+    const modal = document.getElementById('shareModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+function resetCopyButton() {
+    const icon = document.getElementById('copyIcon');
+    const text = document.getElementById('copyText');
+    if (icon) { icon.className = 'fa-solid fa-copy'; }
+    if (text) text.textContent = 'Copiar';
+    const btn = document.getElementById('btnCopyLink');
+    if (btn) btn.style.background = '';
+}
+
+function copyShareLink() {
+    const input = document.getElementById('shareLinkInput');
+    const link = input?.value || window.location.href;
+
+    navigator.clipboard.writeText(link).then(() => {
+        const icon = document.getElementById('copyIcon');
+        const text = document.getElementById('copyText');
+        const btn = document.getElementById('btnCopyLink');
+        if (icon) icon.className = 'fa-solid fa-check';
+        if (text) text.textContent = 'Copiado!';
+        if (btn) btn.style.background = '#10b981';
+        setTimeout(resetCopyButton, 2500);
+    }).catch(() => {
+        // fallback para navegadores antigos
+        input.select();
+        document.execCommand('copy');
+        const text = document.getElementById('copyText');
+        if (text) text.textContent = 'Copiado!';
+        setTimeout(resetCopyButton, 2500);
+    });
+}
+
+function shareOnWhatsApp() {
+    const link = document.getElementById('shareLinkInput')?.value || window.location.href;
+    const text = encodeURIComponent(`Olá! Veja o catálogo personalizado da Dalbran que separei para você: ${link}`);
+    window.open(`https://wa.me/5521998852318?text=${text}`, '_blank', 'noopener');
+}
+
+async function generateShortLink() {
+    const btn = document.getElementById('btnShortLink');
+    const textEl = document.getElementById('shortLinkText');
+    const input = document.getElementById('shareLinkInput');
+    const longUrl = window.location.href;
+
+    if (!textEl || !input) return;
+
+    // Se já gerou, só copia
+    if (btn.dataset.shortUrl) {
+        input.value = btn.dataset.shortUrl;
+        copyShareLink();
+        return;
+    }
+
+    textEl.textContent = 'Gerando...';
+    btn.disabled = true;
+
+    let shortUrl = null;
+
+    try {
+        // Tenta TinyURL primeiro
+        const tinyRes = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+        if (tinyRes.ok) {
+            const txt = await tinyRes.text();
+            if (txt.startsWith('http')) shortUrl = txt.trim();
+        }
+    } catch (_) { /* ignora, tenta próximo */ }
+
+    if (!shortUrl) {
+        try {
+            // Fallback: is.gd
+            const isgdRes = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`);
+            if (isgdRes.ok) {
+                const txt = await isgdRes.text();
+                if (txt.startsWith('http')) shortUrl = txt.trim();
+            }
+        } catch (_) { /* ignora */ }
+    }
+
+    btn.disabled = false;
+
+    if (shortUrl) {
+        input.value = shortUrl;
+        btn.dataset.shortUrl = shortUrl;
+        textEl.textContent = 'Copiar Curto';
+        // Copia automaticamente
+        copyShareLink();
+    } else {
+        textEl.textContent = 'Indisponível';
+        setTimeout(() => { textEl.textContent = 'Link Curto'; }, 3000);
+    }
+}
+
+async function shareNative() {
+    const link = document.getElementById('shareLinkInput')?.value || window.location.href;
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Catálogo Personalizado — Dalbran Distribuidora',
+                text: 'Veja o catálogo personalizado que separei para você!',
+                url: link
+            });
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error('Erro ao compartilhar:', err);
+        }
+    }
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const shareModal = document.getElementById('shareModal');
+        if (shareModal && !shareModal.classList.contains('hidden')) {
+            shareModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+});

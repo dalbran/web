@@ -626,3 +626,200 @@ body {
         height: 140px;
     }
 }
+
+/* =============================================
+   BOTÃO COMPARTILHAR
+   ============================================= */
+
+.btn-share {
+    background: linear-gradient(135deg, #7c3aed, #5b21b6) !important;
+    color: white !important;
+    border: none !important;
+    gap: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+}
+.btn-share:hover {
+    background: linear-gradient(135deg, #6d28d9, #4c1d95) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+}
+
+/* =============================================
+   MODAL / PAINEL DE COMPARTILHAMENTO
+   ============================================= */
+
+.share-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.share-overlay.hidden {
+    display: none !important;
+}
+
+.share-panel {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
+    animation: shareSlideUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes shareSlideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.share-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.share-panel-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.share-panel-header h3 i {
+    color: #7c3aed;
+}
+
+.share-close {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 1rem;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s;
+}
+.share-close:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.share-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+}
+
+/* Caixa do link com botão Copiar */
+.share-link-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: #f8fafc;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.35rem 0.35rem 0.35rem 0.75rem;
+    align-items: center;
+}
+
+.share-link-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    outline: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-copy {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 7px;
+    background: var(--primary);
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.btn-copy:hover {
+    background: var(--primary-dark);
+}
+
+/* Botões de ação (WhatsApp, Link Curto, Nativo) */
+.share-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.share-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.5rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: #f8fafc;
+    color: var(--text-dark);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.share-action-btn:hover {
+    border-color: var(--primary);
+    background: #eff6ff;
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+.share-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.share-action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 1.3rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.share-icon-wa  { background: #25d366; }
+.share-icon-link { background: var(--primary); }
+.share-icon-native { background: #7c3aed; }
+
+@media (max-width: 480px) {
+    .share-panel { padding: 1.5rem; }
+    .share-actions { grid-template-columns: repeat(2, 1fr); }
+}
+

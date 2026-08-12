@@ -49,14 +49,13 @@
         <img id="header-logo-image" class="company-logo company-logo-header hidden" alt="Logo da empresa">
       </div>
 
-      <div class="header-status">
-        <span id="connection-status" class="status-badge status-online">
-          <span class="status-dot"></span> <span id="status-text">🟢 Online</span>
-        </span>
-      </div>
-
       <div class="header-user">
-        <span id="user-email-display"></span>
+        <div class="user-info-stack">
+          <span id="user-email-display"></span>
+          <span id="connection-status" class="status-badge status-online">
+            <span class="status-dot"></span> <span id="status-text">🟢 Online</span>
+          </span>
+        </div>
         <button id="btn-font-decrease" class="btn btn-sm btn-outline" title="Diminuir fonte">A−</button>
         <button id="btn-font-increase" class="btn btn-sm btn-outline" title="Aumentar fonte">A+</button>
         <button id="btn-theme-toggle" class="btn btn-sm btn-outline" title="Alternar tema">◐</button>
@@ -78,48 +77,64 @@
 
       <section id="view-dashboard" class="view-content active">
         <h2>Dashboard</h2>
-        <section class="mobile-quick-actions" aria-label="Atalhos rápidos">
-          <button type="button" data-dashboard-target="view-produtos"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v4H4zm0 6h16v10H4zm3 3v4h4v-4zm6 0v4h4v-4z"/></svg></span><span>Produtos</span></button>
-          <button type="button" data-dashboard-target="view-clientes"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></svg></span><span>Clientes</span></button>
-          <button type="button" data-dashboard-target="view-orcamento"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6zm8 1.8V7h3.2zM9 11h6v2H9zm0 4h6v2H9z"/></svg></span><span>Orçamento</span></button>
-          <button type="button" data-dashboard-target="view-pdv"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2h18v20H3zm3 3v5h12V5zm0 8v6h3v-6zm5 0v6h7v-6z"/></svg></span><span>PDV</span></button>
-          <button type="button" data-dashboard-target="view-catalogos"><span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16v18H4zm3 3v3h10V6zm0 5v6h4v-6zm6 0v2h4v-2zm0 4v2h4v-2z"/></svg></span><span>Catálogos</span></button>
-        </section>
         <div class="metrics-grid">
+          <!-- Card: Produtos -->
           <button class="metric-card metric-card-action" data-dashboard-target="view-produtos" type="button">
-            <h3>Produtos Ativos</h3>
-            <p class="metric-value" id="dash-active-products">0</p>
-            <small>Ver produtos</small>
+            <div class="metric-card-content">
+              <h3>Produtos Ativos</h3>
+              <p class="metric-value" id="dash-active-products">0</p>
+              <small>Ver produtos</small>
+            </div>
+            <span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v4H4zm0 6h16v10H4zm3 3v4h4v-4zm6 0v4h4v-4z"/></svg></span>
           </button>
+          
           <button class="metric-card metric-card-action" data-dashboard-target="view-produtos" type="button">
-            <h3>Total Cadastrados</h3>
-            <p class="metric-value" id="dash-total-products">0</p>
-            <small>Gerenciar catálogo</small>
+            <div class="metric-card-content">
+              <h3>Total Cadastrados</h3>
+              <p class="metric-value" id="dash-total-products">0</p>
+              <small>Gerenciar catálogo</small>
+            </div>
+            <span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v4H4zm0 6h16v10H4zm3 3v4h4v-4zm6 0v4h4v-4z"/></svg></span>
           </button>
+
+          <!-- Card: Clientes -->
           <button class="metric-card metric-card-action" data-dashboard-target="view-clientes" type="button">
-            <h3>Total de Clientes</h3>
-            <p class="metric-value" id="dash-total-clients">0</p>
-            <small>Ver clientes</small>
+            <div class="metric-card-content">
+              <h3>Total de Clientes</h3>
+              <p class="metric-value" id="dash-total-clients">0</p>
+              <small>Ver clientes</small>
+            </div>
+            <span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z"/></svg></span>
           </button>
+
+          <!-- Card: Catálogos -->
+          <button class="metric-card metric-card-action" data-dashboard-target="view-catalogos" type="button">
+            <div class="metric-card-content">
+              <h3>Catálogos Visuais</h3>
+              <p class="metric-value">PDF / Link</p>
+              <small>Gerar e Compartilhar</small>
+            </div>
+            <span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16v18H4zm3 3v3h10V6zm0 5v6h4v-6zm6 0v2h4v-2zm0 4v2h4v-2z"/></svg></span>
+          </button>
+
+          <!-- Card: Orçamentos -->
           <button class="metric-card metric-card-action" data-dashboard-target="view-orcamento" type="button">
-            <h3>Orçamentos Recentes</h3>
-            <p class="metric-value" id="dash-recent-quotes">0</p>
-            <small>Abrir orçamentos</small>
+            <div class="metric-card-content">
+              <h3>Orçamentos Salvos</h3>
+              <p class="metric-value" id="dash-recent-quotes">0</p>
+              <small>Valor: <span id="dash-total-quotes-value">R$ 0,00</span></small>
+            </div>
+            <span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6zm8 1.8V7h3.2zM9 11h6v2H9zm0 4h6v2H9z"/></svg></span>
           </button>
-          <button class="metric-card metric-card-action" data-dashboard-target="view-orcamento" type="button">
-            <h3>Total dos Orçamentos</h3>
-            <p class="metric-value" id="dash-total-quotes-value">R$ 0,00</p>
-            <small>Abrir orçamentos</small>
-          </button>
+
+          <!-- Card: PDV -->
           <button class="metric-card metric-card-action" data-dashboard-target="view-pdv" type="button">
-            <h3>Total de Vendas</h3>
-            <p class="metric-value" id="dash-total-sales">0</p>
-            <small>Abrir vendas</small>
-          </button>
-          <button class="metric-card metric-card-action" data-dashboard-target="view-pdv" type="button">
-            <h3>Valor das Vendas</h3>
-            <p class="metric-value" id="dash-total-sales-value">R$ 0,00</p>
-            <small>Abrir vendas</small>
+            <div class="metric-card-content">
+              <h3>Vendas (PDV)</h3>
+              <p class="metric-value" id="dash-total-sales">0</p>
+              <small>Valor: <span id="dash-total-sales-value">R$ 0,00</span></small>
+            </div>
+            <span class="quick-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2h18v20H3zm3 3v5h12V5zm0 8v6h3v-6zm5 0v6h7v-6z"/></svg></span>
           </button>
         </div>
         <section class="financial-dashboard">

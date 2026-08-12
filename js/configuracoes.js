@@ -101,7 +101,7 @@ function renderSettingsView() {
       <h2>Configurações do Sistema</h2>
     </div>
 
-    ${masterNotice}<form id="form-settings" style="background:white; padding:1.5rem; border-radius:8px; border:1px solid #e2e8f0;">
+    ${masterNotice}<form id="form-settings" class="settings-panel">
       
       <h3>Dados da Empresa</h3>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:1rem;">
