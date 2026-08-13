@@ -618,12 +618,39 @@ function pixCrc16(payload) { let crc = 0xFFFF; for (let i = 0; i < payload.lengt
 function pixField(id, value) { const text = String(value || ''); return `${id}${String(text.length).padStart(2, '0')}${text}`; }
 function buildPixPayload(amount, keyType = 'celular', overrideKey = '') {
   const settings = window.getCompanySettings ? window.getCompanySettings() : {};
-  const key = String(overrideKey || (keyType === 'cnpj' ? settings.pixKeyCnpj : settings.pixKey || '21998852318')).replace(/\s/g, '');
+  // Sanitiza a chave: remove espaços, pontuação e formatação
+  let rawKey = String(overrideKey || (keyType === 'cnpj' ? settings.pixKeyCnpj : settings.pixKey) || '').trim();
+  // Para celular: remove tudo exceto dígitos e +
+  if (keyType === 'celular' && !overrideKey) rawKey = rawKey.replace(/\D/g, '');
+  // Para CNPJ: remove tudo exceto dígitos
+  if (keyType === 'cnpj' && !overrideKey) rawKey = rawKey.replace(/\D/g, '');
+  const key = rawKey;
   if (!key) return null;
-  const merchant = (settings.nomeFantasia || 'DALBRAN').replace(/[^A-Za-z0-9 ]/g, '').slice(0, 25);
-  const city = (settings.pixCidade || 'RIO DE JANEIRO').replace(/[^A-Za-z0-9 ]/g, '').slice(0, 15);
-  const account = pixField('00', 'br.gov.bcb.pix') + pixField('01', key);
-  const base = pixField('00', '01') + pixField('26', account) + pixField('52', '0000') + pixField('53', '986') + pixField('54', Number(amount || 0).toFixed(2)) + pixField('58', 'BR') + pixField('59', merchant) + pixField('60', city) + pixField('62', pixField('05', '***')) + '6304';
+
+  const merchant = (settings.nomeFantasia || 'DALBRAN').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().slice(0, 25).trim();
+  const city = (settings.pixCidade || 'RIO DE JANEIRO').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().slice(0, 15).trim();
+  const amountStr = Number(amount || 0).toFixed(2);
+
+  // Monta o Merchant Account Information (ID 26)
+  const gui = pixField('00', 'br.gov.bcb.pix');
+  const pixKey = pixField('01', key);
+  const merchantAccountInfo = pixField('26', gui + pixKey);
+
+  // Campo 62 - Additional Data Field (subcampo 05 = referência)
+  const additionalData = pixField('62', pixField('05', '***'));
+
+  const base =
+    pixField('00', '01') +          // Payload Format Indicator
+    merchantAccountInfo +             // Merchant Account Information
+    pixField('52', '0000') +          // Merchant Category Code
+    pixField('53', '986') +           // Transaction Currency (BRL)
+    pixField('54', amountStr) +       // Transaction Amount
+    pixField('58', 'BR') +            // Country Code
+    pixField('59', merchant) +        // Merchant Name
+    pixField('60', city) +            // Merchant City
+    additionalData +                  // Additional Data
+    '6304';                           // CRC16 placeholder
+
   return base + pixCrc16(base);
 }
 function showPixForCurrentDocument() {

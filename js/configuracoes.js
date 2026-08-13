@@ -23,7 +23,7 @@ let currentSettings = {
   compartilharWhatsAppAtivo: true,
   pixKey: "21998852318",
   pixCidade: "RIO DE JANEIRO",
-  pixKeyCnpj: "03822789000104",
+  pixKeyCnpj: "03822789000154",
   logoUrl: "",
   logoLoginUrl: "logodash.png",
   logoHeaderUrl: "logoweb2.png",
