@@ -81,7 +81,8 @@ function renderProductsTable() {
     </div>
 
     <div id="modal-product" class="modal hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:1000;">
-      <div style="background:white; padding:2rem; border-radius:8px; max-width:600px; width:90%; max-height:90vh; overflow-y:auto;">
+      <div style="background:white; padding:2rem; border-radius:8px; max-width:600px; width:90%; max-height:90vh; overflow-y:auto; position:relative;">
+        <button type="button" class="modal-close-x" id="btn-close-product-x" aria-label="Fechar">&times;</button>
         <h3 id="modal-product-title" style="margin-bottom:1rem;">Cadastrar Produto</h3>
         <form id="form-product">
           <input type="hidden" id="product-id">
@@ -194,6 +195,13 @@ function bindProductsDOMEvents() {
 
   if (btnCancel) {
     btnCancel.onclick = () => {
+      closeProductModal();
+    };
+  }
+
+  const btnCloseX = document.getElementById('btn-close-product-x');
+  if (btnCloseX) {
+    btnCloseX.onclick = () => {
       closeProductModal();
     };
   }
@@ -439,5 +447,9 @@ function updateDashboardMetrics() {
     const activeCount = productsCache.filter(p => p.ativo !== false).length;
     activeElem.textContent = activeCount;
     totalElem.textContent = productsCache.length;
+  }
+
+  if (typeof window.updateDashboardCategories === 'function') {
+    window.updateDashboardCategories();
   }
 }

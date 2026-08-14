@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dalbran-cache-v3';
+const CACHE_NAME = 'dalbran-cache-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
   './js/auth.js',
   './js/utils.js',
   './js/produtos.js',
+  './js/clientes.js',
   './js/configuracoes.js',
   './js/orcamento.js',
   './js/whatsapp.js',

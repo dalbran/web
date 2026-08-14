@@ -102,7 +102,11 @@ function renderProductSearchResults(searchTerm = '') {
   }
   const products = (window.productsCache || []).filter(product => {
     const name = product.nome || product.name || '';
-    return product.ativo !== false && normalizeSearchText(name).includes(term);
+    const cat = product.categoria || '';
+    return product.ativo !== false && (
+      normalizeSearchText(name).includes(term) ||
+      normalizeSearchText(cat).includes(term)
+    );
   }).slice(0, 8);
   container.innerHTML = products.length
     ? products.map(product => `<button type="button" class="product-search-result" data-product-id="${product.id}"><span>${escapeProductHtml(product.nome || product.name || 'Produto sem nome')}</span><small>${Array.isArray(product.variacoes) ? `${product.variacoes.length} variação(ões)` : 'Sem variações'}</small></button>`).join('')
@@ -1173,30 +1177,78 @@ function updateDashboardQuoteMetrics() {
     if (salesElem) salesElem.textContent = sales.length;
     if (salesValueElem) salesValueElem.textContent = formatCurrency(sales.reduce((acc, sale) => acc + (sale.financeiro?.totalGeral || 0), 0));
   }
-  if (typeof window.updateDashboardFinancial === 'function') window.updateDashboardFinancial();
+  if (typeof window.updateFinanceiro === 'function') window.updateFinanceiro();
 }
 
-window.updateDashboardFinancial = function() {
-  const list = document.getElementById('dash-financial-list');
-  const period = document.getElementById('dash-period');
-  if (!list || !period) return;
+// Helper: filtra vendas por período conforme os seletores informados
+function _filterSalesByPeriod(periodValue, startInput, endInput) {
   const getDate = value => value?.toDate ? value.toDate() : value ? new Date(value) : null;
   const now = new Date(); now.setHours(23, 59, 59, 999);
-  const startInput = document.getElementById('dash-date-start');
-  const endInput = document.getElementById('dash-date-end');
   let start = null; let end = now;
-  if (period.value === 'week') { start = new Date(); start.setDate(start.getDate() - 6); start.setHours(0, 0, 0, 0); }
-  if (period.value === 'month') { start = new Date(now.getFullYear(), now.getMonth(), 1); }
-  if (period.value === 'custom') { start = startInput.value ? new Date(`${startInput.value}T00:00:00`) : null; end = endInput.value ? new Date(`${endInput.value}T23:59:59`) : null; }
-  const sales = (window.quotesCache?.length ? window.quotesCache : quotesHistory).filter(documentItem => {
-    if (documentItem.tipo !== 'venda') return false;
-    const date = getDate(documentItem.createdAt);
+  if (periodValue === 'week') { start = new Date(); start.setDate(start.getDate() - 6); start.setHours(0, 0, 0, 0); }
+  if (periodValue === 'month') { start = new Date(now.getFullYear(), now.getMonth(), 1); }
+  if (periodValue === 'custom') {
+    start = startInput?.value ? new Date(`${startInput.value}T00:00:00`) : null;
+    end = endInput?.value ? new Date(`${endInput.value}T23:59:59`) : null;
+  }
+  return (window.quotesCache?.length ? window.quotesCache : quotesHistory).filter(doc => {
+    if (doc.tipo !== 'venda') return false;
+    const date = getDate(doc.createdAt);
     return (!start || (date && date >= start)) && (!end || (date && date <= end));
   });
-  const revenue = sales.reduce((total, sale) => total + Number(sale.financeiro?.totalGeral || 0), 0);
-  const receivable = sales.filter(sale => sale.financeiro?.formaPag === 'receber').reduce((total, sale) => total + Number(sale.financeiro?.totalGeral || 0), 0);
-  document.getElementById('dash-period-sales-value').textContent = formatCurrency(revenue);
-  document.getElementById('dash-period-sales-count').textContent = sales.length;
-  document.getElementById('dash-period-receivable').textContent = formatCurrency(receivable);
-  list.innerHTML = sales.length ? sales.map(sale => `<button type="button" class="financial-sale" onclick="openSavedQuoteActions('${sale.id}')"><span><strong>${escapeProductHtml(sale.numero || sale.id)}</strong><small>${sale.cliente?.nome || 'Cliente não informado'} · ${sale.createdAt?.toDate ? formatDateTime(sale.createdAt.toDate()) : '-'}</small></span><b>${formatCurrency(sale.financeiro?.totalGeral)}</b></button>`).join('') : '<p class="empty-state">Nenhuma venda no período.</p>';
+}
+
+// Atualiza apenas o card de resumo no Dashboard
+window.updateDashboardFinancial = function() {
+  const period = document.getElementById('fin-period');
+  const startInput = document.getElementById('fin-date-start');
+  const endInput = document.getElementById('fin-date-end');
+  const periodValue = period ? period.value : 'month';
+  const sales = _filterSalesByPeriod(periodValue, startInput, endInput);
+  const revenue = sales.reduce((t, s) => t + Number(s.financeiro?.totalGeral || 0), 0);
+  const countEl = document.getElementById('dash-period-sales-count');
+  const valueEl = document.getElementById('dash-period-sales-value');
+  if (countEl) countEl.textContent = sales.length;
+  if (valueEl) valueEl.textContent = formatCurrency(revenue);
+};
+
+// Atualiza a view dedicada de Balanço Financeiro
+window.updateFinanceiro = function() {
+  const period = document.getElementById('fin-period');
+  const startInput = document.getElementById('fin-date-start');
+  const endInput = document.getElementById('fin-date-end');
+  if (!period) return;
+
+  const sales = _filterSalesByPeriod(period.value, startInput, endInput);
+  const revenue = sales.reduce((t, s) => t + Number(s.financeiro?.totalGeral || 0), 0);
+  const receivable = sales.filter(s => s.financeiro?.formaPag === 'receber').reduce((t, s) => t + Number(s.financeiro?.totalGeral || 0), 0);
+
+  const revEl = document.getElementById('fin-revenue');
+  const cntEl = document.getElementById('fin-count');
+  const recEl = document.getElementById('fin-receivable');
+  if (revEl) revEl.textContent = formatCurrency(revenue);
+  if (cntEl) cntEl.textContent = sales.length;
+  if (recEl) recEl.textContent = formatCurrency(receivable);
+
+  // Também atualiza o card do dashboard
+  const dashCount = document.getElementById('dash-period-sales-count');
+  const dashValue = document.getElementById('dash-period-sales-value');
+  if (dashCount) dashCount.textContent = sales.length;
+  if (dashValue) dashValue.textContent = formatCurrency(revenue);
+
+  const list = document.getElementById('fin-sales-list');
+  if (!list) return;
+  list.innerHTML = sales.length
+    ? sales.map(sale => `
+        <button type="button" class="fin-sale-item" onclick="openSavedQuoteActions('${sale.id}')">
+          <div class="fin-sale-info">
+            <strong>${escapeProductHtml(sale.numero || sale.id)}</strong>
+            <small>${sale.cliente?.nome || 'Cliente não informado'} · ${sale.createdAt?.toDate ? formatDateTime(sale.createdAt.toDate()) : '-'}</small>
+          </div>
+          <div class="fin-sale-right">
+            <span class="fin-sale-value">${formatCurrency(sale.financeiro?.totalGeral)}</span>
+            <span class="fin-sale-badge fin-badge-${sale.financeiro?.formaPag === 'receber' ? 'pending' : 'paid'}">${sale.financeiro?.formaPag === 'receber' ? 'A receber' : 'Pago'}</span>
+          </div>
+        </button>`).join('')
+    : '<p class="empty-state">Nenhuma venda no período selecionado.</p>';
 };
