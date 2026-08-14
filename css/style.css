@@ -936,7 +936,7 @@ body.theme-dark .flow-current-title { color: #e2e8f0; }
 
   .app-content {
     padding: 0.75rem !important;
-    padding-bottom: calc(75px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
   }
 
   /* Cabeçalho Superior Mobile */
@@ -978,7 +978,7 @@ body.theme-dark .flow-current-title { color: #e2e8f0; }
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 72px;
     background-color: var(--surface) !important;
     border-top: 1px solid var(--border);
     border-bottom: none !important;
@@ -987,7 +987,7 @@ body.theme-dark .flow-current-title { color: #e2e8f0; }
     align-items: center;
     z-index: 9999;
     padding-bottom: env(safe-area-inset-bottom);
-    box-shadow: 0 -3px 12px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.09);
   }
 
   .app-nav .nav-item {
@@ -995,11 +995,11 @@ body.theme-dark .flow-current-title { color: #e2e8f0; }
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 3px;
-    font-size: 0.7rem !important;
+    gap: 5px;
+    font-size: 0.73rem !important;
     font-weight: 600 !important;
     color: var(--text-muted) !important;
-    padding: 0.4rem 0 !important;
+    padding: 0.5rem 0 !important;
     flex: 1 !important;
     height: 100% !important;
     border-bottom: none !important;
@@ -1591,8 +1591,8 @@ body.theme-dark .flow-current-title { color: #e2e8f0; }
 
 /* Suporte de Estilos para SVG no Bottom Bar */
 .nav-item svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   stroke: currentColor;
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.22s ease;
 }
@@ -1600,7 +1600,7 @@ body.theme-dark .flow-current-title { color: #e2e8f0; }
 /* Efeito Premium de Navegação Ativa */
 @media (max-width: 768px) {
   .app-nav .nav-item svg {
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
   .app-nav .nav-item {
     transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
